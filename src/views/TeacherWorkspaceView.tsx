@@ -12,8 +12,14 @@ import {
   Award, 
   UserCheck, 
   Printer, 
-  TrendingUp 
+  TrendingUp,
+  CloudUpload,
+  ShieldAlert,
+  Lock
 } from 'lucide-react';
+import { UserProfile } from '../types';
+import { AuthService } from '../services/authService';
+import { KdlhStorageService } from '../services/storage';
 import { CameraScannerModal } from '../components/scanner/CameraScannerModal';
 import { SchemeOfWorkModal } from '../components/teaching/SchemeOfWorkModal';
 import { LessonPlanModal } from '../components/teaching/LessonPlanModal';
@@ -21,9 +27,19 @@ import { NoteSummarizerModal } from '../components/teaching/NoteSummarizerModal'
 import { ExamBuilderModal } from '../components/teaching/ExamBuilderModal';
 import { CurriculumManagerModal } from '../components/curriculum/CurriculumManagerModal';
 import { WeeklyReportingModal } from '../components/reports/WeeklyReportingModal';
+import { AddContentModal } from '../components/common/AddContentModal';
+import { INITIAL_SUBJECTS } from '../data/mockData';
 import { ExamScannerView } from './ExamScannerView';
 
-export const TeacherWorkspaceView: React.FC = () => {
+interface TeacherWorkspaceViewProps {
+  currentUser?: UserProfile;
+  onRefreshResources?: () => void;
+}
+
+export const TeacherWorkspaceView: React.FC<TeacherWorkspaceViewProps> = ({
+  currentUser,
+  onRefreshResources
+}) => {
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'SCANNER' | 'SCHEMES' | 'PLANS' | 'EXAMS' | 'CURRICULUM'>('OVERVIEW');
 
   const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
@@ -33,6 +49,18 @@ export const TeacherWorkspaceView: React.FC = () => {
   const [isExamBuilderOpen, setIsExamBuilderOpen] = useState<boolean>(false);
   const [isCurriculumOpen, setIsCurriculumOpen] = useState<boolean>(false);
   const [isReportOpen, setIsReportOpen] = useState<boolean>(false);
+  const [isAddContentOpen, setIsAddContentOpen] = useState<boolean>(false);
+
+  // Role validation logic: TEACHER, ADMIN, or FOUNDER
+  const effectiveUser = currentUser || AuthService.getCurrentUser() || KdlhStorageService.getCurrentUser();
+  const userRole = effectiveUser?.role?.toUpperCase() || 'STUDENT';
+  const isAuthorized = ['TEACHER', 'ADMIN', 'FOUNDER'].includes(userRole);
+
+  const handleOpenAddContent = () => {
+    if (isAuthorized) {
+      setIsAddContentOpen(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-4 sm:p-6 lg:p-8 space-y-6">
@@ -59,6 +87,20 @@ export const TeacherWorkspaceView: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            {/* Conditional Upload Button for Authorized Roles */}
+            {isAuthorized ? (
+              <button
+                onClick={handleOpenAddContent}
+                className="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white text-xs font-black rounded-xl transition shadow-lg flex items-center gap-2 uppercase tracking-wider"
+              >
+                <Plus className="w-4 h-4 text-emerald-200" /> Upload Resource
+              </button>
+            ) : (
+              <div className="px-3.5 py-2 bg-slate-900/90 border border-amber-500/40 rounded-xl text-amber-300 text-[11px] font-bold flex items-center gap-1.5 shadow">
+                <Lock className="w-3.5 h-3.5 text-amber-400" /> Teacher Upload Locked
+              </div>
+            )}
+
             <button
               onClick={() => setIsScannerOpen(true)}
               className="px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold rounded-xl transition shadow-lg flex items-center gap-2"
@@ -99,6 +141,14 @@ export const TeacherWorkspaceView: React.FC = () => {
         >
           <Scan className="w-4 h-4" /> AI Exam Scanner
         </button>
+        {isAuthorized && (
+          <button
+            onClick={handleOpenAddContent}
+            className="px-4 py-2 rounded-xl text-xs font-bold text-emerald-300 hover:text-white bg-emerald-950/60 border border-emerald-500/40 transition flex items-center gap-2 whitespace-nowrap"
+          >
+            <CloudUpload className="w-4 h-4 text-emerald-400" /> Upload Notes / Exams
+          </button>
+        )}
         <button
           onClick={() => setIsSchemeOpen(true)}
           className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200 bg-slate-900/60 transition flex items-center gap-2 whitespace-nowrap"
@@ -251,6 +301,39 @@ export const TeacherWorkspaceView: React.FC = () => {
             </button>
           </div>
 
+          {/* Tool Card 7: Academic Content Publisher (Teacher / Admin Exclusive) */}
+          <div className="bg-slate-900 border border-blue-900/40 rounded-2xl p-6 space-y-4 hover:border-blue-500/50 transition shadow-xl group">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/30 flex items-center justify-center">
+              <CloudUpload className="w-6 h-6 group-hover:scale-110 transition" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+                Resource Upload Hub
+                <span className="text-[10px] px-2 py-0.5 rounded-md bg-blue-900/60 text-blue-300 font-extrabold border border-blue-700/50">
+                  FIRESTORE
+                </span>
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Upload and publish verified lesson notes, past papers with marking schemes, lab practicals, quizzes, and reference guides.
+              </p>
+            </div>
+            {isAuthorized ? (
+              <button
+                onClick={handleOpenAddContent}
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-md"
+              >
+                <Plus className="w-4 h-4" /> Add & Publish Content
+              </button>
+            ) : (
+              <button
+                disabled
+                className="w-full py-2.5 bg-slate-950 text-slate-500 font-bold text-xs rounded-xl border border-slate-800 flex items-center justify-center gap-1.5 cursor-not-allowed"
+              >
+                <Lock className="w-4 h-4" /> Teacher Role Required
+              </button>
+            )}
+          </div>
+
         </div>
       )}
 
@@ -290,6 +373,20 @@ export const TeacherWorkspaceView: React.FC = () => {
         isOpen={isReportOpen}
         onClose={() => setIsReportOpen(false)}
       />
+
+      {isAuthorized && (
+        <AddContentModal
+          isOpen={isAddContentOpen}
+          onClose={() => setIsAddContentOpen(false)}
+          subjects={INITIAL_SUBJECTS}
+          onContentAdded={() => {
+            setIsAddContentOpen(false);
+            onRefreshResources?.();
+          }}
+          uploaderName={effectiveUser?.name || 'Mwl. Isaack Edward Lungwa'}
+          uploaderRole={effectiveUser?.role === 'ADMIN' ? 'System Administrator' : 'Verified Teacher'}
+        />
+      )}
 
     </div>
   );

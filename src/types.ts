@@ -1,15 +1,40 @@
-export type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN';
+export type UserRole = 'FOUNDER' | 'ADMIN' | 'TEACHER' | 'STUDENT';
+
+export type TeacherApprovalStatus = 'APPROVED' | 'PENDING' | 'REJECTED';
 
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role: UserRole;
   form?: string; // Form I to VI
   school: string;
+  studentId?: string;
+  subjects?: string[]; // Taught subjects for teachers
+  formsTaught?: string[]; // Taught forms for teachers
   avatarUrl?: string;
   joinedDate: string;
   streakDays: number;
+  status?: 'active' | 'suspended';
+  teacherApprovalStatus?: TeacherApprovalStatus;
+  teacherApprovalDate?: string;
+  teacherApprovedBy?: string;
+  authProvider?: 'phone' | 'email' | 'google' | 'admin';
+  isRegistered?: boolean;
+  registrationDate?: string;
+  lastActiveAt?: string;
+}
+
+export interface FirestoreUserStats {
+  totalUsers: number;
+  studentsCount: number;
+  teachersCount: number;
+  approvedTeachersCount: number;
+  pendingTeachersCount: number;
+  adminsCount: number;
+  activeUsersCount: number;
+  lastUpdated: string;
 }
 
 export type AcademicLevel = 'ORDINARY_SECONDARY' | 'ADVANCED_SECONDARY';
@@ -105,6 +130,23 @@ export interface PracticalLabResource extends BaseResource {
   fileUrl?: string;
 }
 
+export type VideoCategoryType = 
+  | 'LESSONS'
+  | 'PRACTICALS'
+  | 'QUESTIONS'
+  | 'PAST_PAPER_EXPLANATIONS'
+  | 'NOTES_EXPLANATIONS'
+  | 'REVISION'
+  | 'EXAM_PREPARATION'
+  | 'SCIENCE'
+  | 'MATHEMATICS'
+  | 'LANGUAGES'
+  | 'GENERAL_EDUCATION';
+
+export type MediaLevelType = 'O-LEVEL' | 'A-LEVEL' | 'GENERAL';
+
+export type MediaTypeOrigin = 'ADMIN_UPLOADED' | 'ONLINE_DISCOVERED' | 'KDLH_OFFLINE';
+
 export interface VideoResource extends BaseResource {
   category: 'VIDEO' | 'TUTORIAL';
   videoUrl: string;
@@ -113,6 +155,18 @@ export interface VideoResource extends BaseResource {
   difficulty?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   isTutorial: boolean;
   transcript?: string;
+  videoCategory?: VideoCategoryType;
+  level?: MediaLevelType;
+  practicalName?: string;
+  mediaTypeOrigin?: MediaTypeOrigin;
+  published?: boolean;
+  qualityOptions?: string[];
+  connectedMaterialIds?: {
+    noteIds?: string[];
+    questionIds?: string[];
+    practicalIds?: string[];
+    revisionIds?: string[];
+  };
 }
 
 export interface BookResource extends BaseResource {
@@ -136,14 +190,45 @@ export interface QuestionBankItem extends BaseResource {
   explanation: string;
   marks: number;
   examYear?: number;
+  audioExplanationUrl?: string;
 }
+
+export type AudioHubCategory = 'EDUCATIONAL' | 'REFRESHMENT';
+
+export type AudioSubcategory = 
+  | 'LESSON_EXPLANATION'
+  | 'TOPIC_EXPLANATION'
+  | 'REVISION'
+  | 'QUESTION_EXPLANATION'
+  | 'NOTES_AUDIO'
+  | 'EXAM_PREPARATION'
+  | 'PRACTICAL_EXPLANATION'
+  | 'LANGUAGE'
+  | 'STUDY_TIPS'
+  | 'MUSIC'
+  | 'MOTIVATIONAL'
+  | 'INSTRUMENTAL'
+  | 'RELAXATION'
+  | 'PUBLIC_DOMAIN'
+  | 'KDLH_OFFLINE';
 
 export interface AudioResource extends BaseResource {
   category: 'AUDIO';
   audioUrl: string;
   durationSeconds: number;
   audioCategory: 'LESSON' | 'PODCAST' | 'REVISION_SUMMARY' | 'ANNOUNCEMENT' | 'MOTIVATION';
+  hubCategory?: AudioHubCategory;
+  audioSubcategory?: AudioSubcategory;
   speaker: string;
+  level?: MediaLevelType;
+  mediaTypeOrigin?: MediaTypeOrigin;
+  published?: boolean;
+  thumbnailUrl?: string;
+  connectedMaterialIds?: {
+    noteIds?: string[];
+    questionIds?: string[];
+    practicalIds?: string[];
+  };
 }
 
 export interface MediaRightsRecord {

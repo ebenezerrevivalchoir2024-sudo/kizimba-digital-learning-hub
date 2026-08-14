@@ -1,6 +1,11 @@
 {
   "name": "Kizimba Digital Learning Hub",
   "description": "A complete EdTech digital learning ecosystem for Kizimba Secondary School with notes, past papers, practical lab, video & audio lessons, digital library, revision center, question bank, teacher resources, and KDLH AI assistant.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

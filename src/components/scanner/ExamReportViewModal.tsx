@@ -128,7 +128,7 @@ export const ExamReportViewModal: React.FC<ExamReportViewModalProps> = ({
             </h3>
 
             <div className="space-y-2">
-              {script.topicPerformance.map((tp, i) => (
+              {(script.topicPerformance || []).map((tp, i) => (
                 <div key={i} className="p-3 rounded-lg bg-slate-900 print:bg-slate-50 border border-slate-800 print:border-slate-200">
                   <div className="flex justify-between text-xs font-semibold mb-1">
                     <span className="text-slate-200 print:text-black">{tp.topic}</span>
@@ -163,7 +163,7 @@ export const ExamReportViewModal: React.FC<ExamReportViewModalProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800 print:divide-slate-200 text-slate-300 print:text-black">
-                  {script.questionResults.map((q) => (
+                  {(script.questionResults || []).map((q) => (
                     <tr key={q.questionId} className="hover:bg-slate-900/50">
                       <td className="p-3 font-bold text-teal-400 print:text-teal-700">Q{q.questionNumber}</td>
                       <td className="p-3 max-w-xs">{q.questionText}</td>

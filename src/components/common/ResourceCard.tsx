@@ -11,10 +11,7 @@ import {
   Eye, 
   Download, 
   Bookmark, 
-  CheckCircle2, 
-  Clock, 
   Lock,
-  Sparkles,
   ExternalLink,
   HardDrive
 } from 'lucide-react';
@@ -59,60 +56,60 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   const getCategoryIcon = () => {
     switch (resource.category) {
       case 'NOTE':
-        return <FileText className="w-5 h-5 text-cyan-400" />;
+        return <FileText className="w-5 h-5 text-blue-400" />;
       case 'PAST_PAPER':
-        return <BookOpen className="w-5 h-5 text-cyan-300" />;
+        return <BookOpen className="w-5 h-5 text-amber-400" />;
       case 'PRACTICAL':
         return <FlaskConical className="w-5 h-5 text-emerald-400" />;
       case 'VIDEO':
       case 'TUTORIAL':
         return <Video className="w-5 h-5 text-rose-400" />;
       case 'BOOK':
-        return <BookOpen className="w-5 h-5 text-amber-400" />;
+        return <BookOpen className="w-5 h-5 text-amber-300" />;
       case 'QUESTION':
-        return <HelpCircle className="w-5 h-5 text-purple-400" />;
+        return <HelpCircle className="w-5 h-5 text-indigo-400" />;
       case 'AUDIO':
         return <Headphones className="w-5 h-5 text-teal-400" />;
       case 'MUSIC':
         return <Music className="w-5 h-5 text-pink-400" />;
       case 'TEACHER_RESOURCE':
-        return <Briefcase className="w-5 h-5 text-cyan-200" />;
+        return <Briefcase className="w-5 h-5 text-amber-400" />;
       default:
-        return <FileText className="w-5 h-5 text-cyan-400" />;
+        return <FileText className="w-5 h-5 text-blue-400" />;
     }
   };
 
   const getPermissionBadge = () => {
     switch (resource.permissionStatus) {
       case 'SCHOOL_OWNED':
-        return <span className="bg-cyan-950/80 text-cyan-300 text-[10px] font-bold px-2 py-0.5 rounded border border-cyan-800">KDLH School Owned</span>;
+        return <span className="bg-blue-950 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-blue-800 font-mono">KDLH School Owned</span>;
       case 'OFFICIAL_SOURCE':
-        return <span className="bg-emerald-950/80 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-800">NECTA / Official</span>;
+        return <span className="bg-emerald-950 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-800 font-mono">NECTA / Official</span>;
       case 'OPEN_LICENSE':
-        return <span className="bg-purple-950/80 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-800">Open License</span>;
+        return <span className="bg-indigo-950 text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-indigo-800 font-mono">Open License</span>;
       case 'PUBLIC_DOMAIN':
-        return <span className="bg-slate-900/80 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-700">Public Domain</span>;
+        return <span className="bg-slate-900 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-700 font-mono">Public Domain</span>;
       case 'NOT_AUTHORIZED':
-        return <span className="bg-rose-950/80 text-rose-300 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-800 flex items-center gap-1"><Lock className="w-2.5 h-2.5"/> External Link Only</span>;
+        return <span className="bg-rose-950 text-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-rose-800 flex items-center gap-1 font-mono"><Lock className="w-2.5 h-2.5"/> External Link</span>;
       default:
-        return <span className="bg-amber-950/80 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-800">Verified</span>;
+        return <span className="bg-amber-950 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-800 font-mono">Verified Resource</span>;
     }
   };
 
   return (
-    <div className="bg-cyan-950/20 border border-cyan-900/40 hover:border-cyan-500/60 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.05)] hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between overflow-hidden group font-mono backdrop-blur-md">
+    <div className="bg-slate-900/90 border border-blue-900/50 hover:border-amber-400/80 rounded-2xl shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group font-serif backdrop-blur-md">
       <div className="p-5">
         {/* Top Header Row */}
         <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-black/60 border border-cyan-900/40 rounded-lg group-hover:border-cyan-500/50 transition-colors">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl group-hover:border-amber-400/50 transition-colors shadow-sm">
               {getCategoryIcon()}
             </div>
             <div>
-              <span className="text-xs font-bold text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-900/60">
+              <span className="text-xs font-bold text-amber-300 bg-blue-950/90 px-2.5 py-0.5 rounded-lg border border-blue-800 font-mono">
                 {resource.subjectName}
               </span>
-              <span className="text-xs font-medium text-cyan-400/70 ml-1.5">
+              <span className="text-xs font-bold text-slate-300 ml-1.5 font-mono">
                 {resource.form}
               </span>
             </div>
@@ -124,22 +121,22 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                 e.stopPropagation();
                 exportResourceToTxt(resource);
               }}
-              className="p-1.5 rounded-lg transition-colors border text-cyan-500/60 hover:text-cyan-300 bg-black/40 border-cyan-900/40"
-              title="Export Summary to Local .TXT File for Offline Printing"
+              className="p-1.5 rounded-xl transition-colors border text-slate-400 hover:text-white bg-slate-950 border-slate-800 hover:border-slate-700"
+              title="Export Summary to Local .TXT File"
             >
               <Download className="w-4 h-4" />
             </button>
 
             <button
               onClick={handleToggleCache}
-              className={`p-1.5 rounded-lg transition-colors border ${
+              className={`p-1.5 rounded-xl transition-colors border ${
                 isCached 
-                  ? 'text-cyan-400 bg-cyan-950/80 border-cyan-500/60 shadow-[0_0_8px_#22d3ee]' 
-                  : 'text-cyan-500/60 hover:text-cyan-300 bg-black/40 border-cyan-900/40'
+                  ? 'text-amber-400 bg-amber-950/60 border-amber-500/60 shadow-[0_0_8px_rgba(245,158,11,0.3)]' 
+                  : 'text-slate-400 hover:text-white bg-slate-950 border-slate-800 hover:border-slate-700'
               }`}
-              title={isCached ? "Cached in IndexedDB for Offline Study" : "Download & Cache in IndexedDB"}
+              title={isCached ? "Cached for Offline Study" : "Save to Offline Vault"}
             >
-              <HardDrive className={`w-4 h-4 ${isCached ? 'text-cyan-400' : ''}`} />
+              <HardDrive className={`w-4 h-4 ${isCached ? 'text-amber-400' : ''}`} />
             </button>
 
             {onToggleSave && (
@@ -148,7 +145,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                   e.stopPropagation();
                   onToggleSave(resource.id);
                 }}
-                className={`p-1.5 rounded-lg transition-colors border ${isSaved ? 'text-amber-400 bg-amber-950/40 border-amber-500/50' : 'text-cyan-500/60 hover:text-cyan-300 bg-black/40 border-cyan-900/40'}`}
+                className={`p-1.5 rounded-xl transition-colors border ${isSaved ? 'text-amber-400 bg-amber-950/40 border-amber-500/50' : 'text-slate-400 hover:text-white bg-slate-950 border-slate-800 hover:border-slate-700'}`}
                 title={isSaved ? "Saved" : "Save resource"}
               >
                 <Bookmark className="w-4 h-4 fill-current" />
@@ -160,13 +157,13 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
         {/* Title */}
         <h4 
           onClick={() => onSelect(resource)}
-          className="text-base font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-2 cursor-pointer mb-2 leading-snug"
+          className="text-base font-bold text-white group-hover:text-amber-300 transition-colors line-clamp-2 cursor-pointer mb-2 leading-snug"
         >
           {resource.title}
         </h4>
 
         {/* Description */}
-        <p className="text-cyan-200/70 text-xs line-clamp-2 mb-3 leading-relaxed">
+        <p className="text-slate-300 text-xs line-clamp-2 mb-3 leading-relaxed font-sans">
           {resource.description}
         </p>
 
@@ -174,7 +171,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
         <div className="flex flex-wrap items-center gap-2 mb-2">
           {getPermissionBadge()}
           {resource.topic && (
-            <span className="text-[11px] font-medium text-cyan-300/80 bg-black/40 border border-cyan-900/40 px-2 py-0.5 rounded line-clamp-1">
+            <span className="text-[11px] font-medium text-slate-300 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded-md line-clamp-1 font-mono">
               Topic: {resource.topic}
             </span>
           )}
@@ -182,23 +179,24 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
       </div>
 
       {/* Footer Details */}
-      <div className="px-5 py-3 bg-black/40 border-t border-cyan-900/40 flex items-center justify-between text-xs text-cyan-400/70">
+      <div className="px-5 py-3 bg-slate-950 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 font-mono">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1">
-            <Eye className="w-3.5 h-3.5 text-cyan-500" /> {resource.views}
+            <Eye className="w-3.5 h-3.5 text-blue-400" /> {resource.views}
           </span>
           {resource.downloads > 0 && (
             <span className="flex items-center gap-1">
-              <Download className="w-3.5 h-3.5 text-cyan-500" /> {resource.downloads}
+              <Download className="w-3.5 h-3.5 text-amber-400" /> {resource.downloads}
             </span>
           )}
         </div>
 
         <button
           onClick={() => onSelect(resource)}
-          className="inline-flex items-center gap-1 font-bold text-cyan-400 hover:text-cyan-200 transition-colors text-xs uppercase tracking-wider"
+          className="inline-flex items-center gap-1 font-bold text-amber-400 hover:text-amber-300 transition-colors text-xs uppercase tracking-wider font-mono"
         >
-          Open <ExternalLink className="w-3 h-3" />
+          <span>Open</span>
+          <ExternalLink className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

@@ -1,43 +1,148 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --bg-main: #020617;
+    --text-main: #f8fafc;
+    --card-bg: #0f172a;
+    --border-color: #1e293b;
+    --primary-blue: #2563eb;
+    --accent-gold: #eab308;
+  }
+
+  html.light {
+    --bg-main: #f8fafc;
+    --text-main: #020617;
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --primary-blue: #1d4ed8;
+    --accent-gold: #d97706;
+  }
+
   body {
-    background-color: #05060a;
-    color: rgba(207, 250, 254, 0.9);
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: "Times New Roman", Times, "Baskerville", Georgia, serif;
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Times New Roman", Times, "Baskerville", Georgia, serif;
+    letter-spacing: 0.02em;
   }
 }
 
-/* Custom glowing effects and cyan styling */
-.glow-cyan {
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
+/* Red Pen Teacher Handwritten Annotations */
+.red-pen-text {
+  font-family: "Caveat", "Comic Sans MS", "Segoe Script", cursive;
+  color: #dc2626;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transform: rotate(-1.5deg);
+  display: inline-block;
 }
 
-.glow-cyan-lg {
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.25);
+.red-pen-circle {
+  border: 2.5px solid #dc2626;
+  border-radius: 50% 45% 55% 48% / 48% 52% 48% 52%;
+  padding: 2px 8px;
+  color: #dc2626;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.glow-purple {
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.35);
+.red-pen-check {
+  color: #dc2626;
+  font-weight: 900;
+  font-size: 1.25rem;
+  display: inline-block;
+  transform: scale(1.15);
 }
 
-/* Custom scrollbar for immersive cyberpunk dark vibe */
+.red-pen-cross {
+  color: #dc2626;
+  font-weight: 900;
+  font-size: 1.25rem;
+  display: inline-block;
+  transform: scale(1.15);
+}
+
+.red-pen-underline {
+  border-bottom: 2px wavy #dc2626;
+}
+
+/* Horizontal Scroll Utilities */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroll-touch {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ticker / Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Academic Patterns */
+.chalkboard-bg {
+  background-color: #020617;
+  background-image: radial-gradient(rgba(234, 179, 8, 0.12) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.academic-paper-bg {
+  background-color: #020617;
+  background-image: linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Custom Gold & Blue Glow */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #05060a;
+  background: #020617;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0e7490;
+  background: #1e3a8a;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #06b6d4;
+  background: #2563eb;
 }
+

@@ -12,7 +12,8 @@ import {
   LessonPlan,
   NoteSummary,
   CurriculumTopic,
-  StudentTopicProgress
+  StudentTopicProgress,
+  WeeklyStudentReport
 } from '../types';
 import { IndexedDbService } from './db';
 
@@ -58,23 +59,33 @@ const TOPIC_PROGRESS_KEY = 'kdlh_topic_progress_v1';
 
 export class KdlhStorageService {
   // Current logged in user
-  static getCurrentUser(): UserProfile {
+  static getCurrentUser(): UserProfile | null {
     try {
       const stored = localStorage.getItem(CURRENT_USER_KEY);
-      if (stored) return JSON.parse(stored);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.id) return parsed;
+      }
     } catch (e) {
       console.warn('Storage read failed', e);
     }
-    // Default to Student or Founder/Admin if desired
-    return DEMO_USERS[0]; // Student Juma Baraka by default
+    return null;
   }
 
-  static setCurrentUser(user: UserProfile): void {
+  static setCurrentUser(user: UserProfile | null): void {
     try {
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+      if (user) {
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+      } else {
+        localStorage.removeItem(CURRENT_USER_KEY);
+      }
     } catch (e) {
       console.warn('Storage write failed', e);
     }
+  }
+
+  static saveCurrentUser(user: UserProfile): void {
+    this.setCurrentUser(user);
   }
 
   static switchUserRole(role: UserRole): UserProfile {
@@ -82,6 +93,7 @@ export class KdlhStorageService {
     this.setCurrentUser(found);
     return found;
   }
+
 
   // All resources combined
   static getAllResources(): KDLHResource[] {
@@ -551,6 +563,72 @@ export class KdlhStorageService {
   static addCurriculumTopic(topic: CurriculumTopic): void {
     const list = this.getCurriculumTopics();
     this.saveCurriculumTopics([topic, ...list]);
+  }
+
+  // --- PUBLISHED STUDENT REPORTS ---
+  private static INITIAL_STUDENT_REPORTS: WeeklyStudentReport[] = [
+    {
+      id: 'rep-init-001',
+      weekNumber: 6,
+      datesRange: '10 Feb 2026 - 14 Feb 2026',
+      studentId: 'student-juma',
+      studentName: 'Juma Baraka',
+      admissionNumber: 'KDLH-2023-014',
+      form: 'Form IV',
+      className: 'Form IV A',
+      subjectsTaught: ['Chemistry', 'Mathematics', 'Physics', 'Biology'],
+      topicsCovered: ['Organic Chemistry - Alcohols', 'Volumetric Analysis'],
+      testsConducted: ['Terminal Examination 2026'],
+      marksObtained: [
+        { subject: 'Chemistry', score: 88, total: 100, grade: 'A' },
+        { subject: 'Mathematics', score: 82, total: 100, grade: 'A' },
+        { subject: 'Physics', score: 79, total: 100, grade: 'B' },
+        { subject: 'Biology', score: 91, total: 100, grade: 'A' }
+      ],
+      attendanceDays: 20,
+      totalSchoolDays: 20,
+      homeworkStatus: 'Completed assigned revision past papers',
+      strengths: ['Strong problem solving in Organic Chemistry', 'Full attendance record'],
+      weaknesses: ['Review Physics loop equations'],
+      teacherComments: 'Excellent consistency across all sciences. Demonstrates strong analytical precision.',
+      recommendedImprovement: 'Maintain study schedule for national examinations.',
+      teacherName: 'Mwl. Isaack Edward Lungwa',
+      dateGenerated: '2026-02-14'
+    }
+  ];
+
+  static getPublishedStudentReports(): WeeklyStudentReport[] {
+    try {
+      const stored = localStorage.getItem('kdlh_student_reports_v1');
+      if (stored) return JSON.parse(stored);
+    } catch (e) {
+      console.warn('Student reports storage read failed', e);
+    }
+    this.savePublishedStudentReports(this.INITIAL_STUDENT_REPORTS);
+    return this.INITIAL_STUDENT_REPORTS;
+  }
+
+  static savePublishedStudentReports(reports: WeeklyStudentReport[]): void {
+    try {
+      localStorage.setItem('kdlh_student_reports_v1', JSON.stringify(reports));
+    } catch (e) {
+      console.warn('Student reports storage write failed', e);
+    }
+  }
+
+  static addPublishedStudentReports(newReports: WeeklyStudentReport[]): void {
+    const current = this.getPublishedStudentReports();
+    // Replace or add based on studentId/admissionNumber
+    const updated = [...current];
+    for (const r of newReports) {
+      const existingIdx = updated.findIndex(x => x.admissionNumber === r.admissionNumber || x.id === r.id);
+      if (existingIdx >= 0) {
+        updated[existingIdx] = r;
+      } else {
+        updated.unshift(r);
+      }
+    }
+    this.savePublishedStudentReports(updated);
   }
 
   // --- STUDENT TOPIC PROGRESS ---

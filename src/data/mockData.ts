@@ -19,6 +19,16 @@ import {
 
 export const DEMO_USERS: UserProfile[] = [
   {
+    id: 'user-founder-1',
+    name: 'ISAACK EDWARD LUNGWA',
+    email: 'isaack.lungwa@kizimba.ac.tz',
+    role: 'FOUNDER',
+    school: 'Kizimba Secondary School',
+    joinedDate: '2024-01-01',
+    streakDays: 365,
+    status: 'active'
+  },
+  {
     id: 'user-student-1',
     name: 'Juma Baraka',
     email: 'juma.baraka@kizimba.ac.tz',
@@ -26,7 +36,8 @@ export const DEMO_USERS: UserProfile[] = [
     form: 'Form IV',
     school: 'Kizimba Secondary School',
     joinedDate: '2025-01-15',
-    streakDays: 14
+    streakDays: 14,
+    status: 'active'
   },
   {
     id: 'user-teacher-1',
@@ -35,16 +46,18 @@ export const DEMO_USERS: UserProfile[] = [
     role: 'TEACHER',
     school: 'Kizimba Secondary School',
     joinedDate: '2024-03-01',
-    streakDays: 42
+    streakDays: 42,
+    status: 'active'
   },
   {
     id: 'user-admin-1',
-    name: 'ISAACK EDWARD LUNGWA',
-    email: 'isaack.lungwa@kizimba.ac.tz',
+    name: 'KDLH Admin Team',
+    email: 'admin@kizimba.ac.tz',
     role: 'ADMIN',
     school: 'Kizimba Secondary School',
     joinedDate: '2024-01-01',
-    streakDays: 180
+    streakDays: 180,
+    status: 'active'
   }
 ];
 

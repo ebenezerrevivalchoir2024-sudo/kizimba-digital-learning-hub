@@ -243,19 +243,19 @@ export const CurriculumManagerModal: React.FC<CurriculumManagerModalProps> = ({
 
                 {/* Subtopics List */}
                 <div className="space-y-3 pt-2">
-                  {activeTopic.subtopics.map((sub, i) => (
+                  {(activeTopic.subtopics || []).map((sub, i) => (
                     <div key={sub.id} className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-xs font-bold text-slate-200">
                           {i + 1}. {sub.name}
                         </span>
                         <span className="text-[10px] text-teal-400 font-semibold flex items-center gap-1">
-                          <Link className="w-3 h-3" /> {sub.linkedResourceIds.length} Resources
+                          <Link className="w-3 h-3" /> {(sub.linkedResourceIds || []).length} Resources
                         </span>
                       </div>
 
                       <div className="text-[11px] text-slate-400">
-                        Competencies: {sub.competencies.join(', ')}
+                        Competencies: {(sub.competencies || []).join(', ')}
                       </div>
                     </div>
                   ))}

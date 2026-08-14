@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Auth Helpers
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getUserData(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data;
+    }
+
+    function userExists(userId) {
+      return exists(/databases/$(database)/documents/users/$(userId));
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        userExists(request.auth.uid) &&
+        (
+          getUserData(request.auth.uid).role in ["ADMIN", "FOUNDER", "admin", "founder"] ||
+          request.auth.token.email == "isaack.lungwa@kizimba.ac.tz"
+        );
+    }
+
+    function isTeacherOrAdmin() {
+      return isAuthenticated() && (
+        isAdmin() ||
+        (
+          userExists(request.auth.uid) &&
+          getUserData(request.auth.uid).role in ["TEACHER", "teacher"] &&
+          getUserData(request.auth.uid).teacherApprovalStatus == "APPROVED"
+        )
+      );
+    }
+
+    // Users Collection Security
+    match /users/{userId} {
+      // Any authenticated user can read user profiles
+      allow read: if isAuthenticated();
+
+      // Users can create their own profile upon registration
+      // Strict role enforcement: Cannot self-assign ADMIN or FOUNDER
+      // If registering as TEACHER, approval status must be PENDING
+      allow create: if isAuthenticated() && request.auth.uid == userId &&
+        (
+          !('role' in request.resource.data) ||
+          request.resource.data.role in ["STUDENT", "student", "TEACHER", "teacher"] ||
+          isAdmin()
+        ) &&
+        (
+          request.resource.data.role != "TEACHER" && request.resource.data.role != "teacher" ||
+          request.resource.data.teacherApprovalStatus == "PENDING" ||
+          isAdmin()
+        );
+
+      // Users can update their own non-privileged details (name, form, school, avatar)
+      // Only Admins can modify role, status, or teacherApprovalStatus
+      allow update: if isAuthenticated() && (
+        isAdmin() ||
+        (
+          isOwner(userId) &&
+          request.resource.data.role == resource.data.role &&
+          (!('teacherApprovalStatus' in request.resource.data) || request.resource.data.teacherApprovalStatus == resource.data.teacherApprovalStatus) &&
+          (!('status' in request.resource.data) || request.resource.data.status == resource.data.status)
+        )
+      );
+
+      // Only Admin or Founder can delete user accounts
+      allow delete: if isAdmin();
+    }
+
+    // Educational Resources Collection
+    match /resources/{resourceId} {
+      // Authenticated users and students can read resources
+      allow read: if true;
+      
+      // Teachers and Admins can publish educational resources
+      allow create: if isAuthenticated();
+      
+      // Resource owners and Admins can update/delete
+      allow update: if isAuthenticated() && (
+        request.auth.uid == resource.data.uploaderId || 
+        isTeacherOrAdmin()
+      );
+      
+      allow delete: if isAuthenticated() && (
+        request.auth.uid == resource.data.uploaderId || 
+        isAdmin()
+      );
+    }
+
+    // System Statistics and Reports
+    match /system_stats/{statId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

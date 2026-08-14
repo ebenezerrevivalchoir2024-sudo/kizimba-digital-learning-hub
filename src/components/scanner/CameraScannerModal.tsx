@@ -37,6 +37,9 @@ export const CameraScannerModal: React.FC<CameraScannerModalProps> = ({
   const [pages, setPages] = useState<ScannedPage[]>([]);
   const [selectedPageIndex, setSelectedPageIndex] = useState<number>(0);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
+  const [cameraFacingMode, setCameraFacingMode] = useState<'environment' | 'user'>('environment');
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [isCameraLoading, setIsCameraLoading] = useState<boolean>(false);
   const [brightness, setBrightness] = useState<number>(100);
   const [contrast, setContrast] = useState<number>(100);
   const [rotation, setRotation] = useState<number>(0);
@@ -48,7 +51,7 @@ export const CameraScannerModal: React.FC<CameraScannerModalProps> = ({
 
   useEffect(() => {
     if (isOpen && activeTab === 'camera') {
-      startCamera();
+      startCamera(cameraFacingMode);
     } else {
       stopCamera();
     }
@@ -57,28 +60,88 @@ export const CameraScannerModal: React.FC<CameraScannerModalProps> = ({
     };
   }, [isOpen, activeTab]);
 
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setIsCameraActive(true);
-      }
-    } catch (err) {
-      console.warn('Camera access error:', err);
-      setIsCameraActive(false);
-    }
-  };
-
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach(track => {
+        track.stop();
+      });
       videoRef.current.srcObject = null;
     }
     setIsCameraActive(false);
+  };
+
+  const startCamera = async (facingMode: 'environment' | 'user' = 'environment') => {
+    setIsCameraLoading(true);
+    setCameraError(null);
+    stopCamera();
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setCameraError('Camera API is not supported in this browser or context. Please use File Upload instead.');
+      setIsCameraLoading(false);
+      setIsCameraActive(false);
+      return;
+    }
+
+    try {
+      let stream: MediaStream | null = null;
+      try {
+        // Attempt ideal resolution & specified camera facing mode
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode,
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          }
+        });
+      } catch (err1) {
+        console.warn('Primary camera constraint failed, trying fallback mode:', err1);
+        try {
+          // Fallback: facing mode without explicit resolution
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode }
+          });
+        } catch (err2) {
+          console.warn('Secondary camera constraint failed, trying basic video:', err2);
+          // Generic fallback: any video stream
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: true
+          });
+        }
+      }
+
+      if (stream && videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play().catch(e => console.warn('Video play error:', e));
+        setIsCameraActive(true);
+        setCameraFacingMode(facingMode);
+        setCameraError(null);
+      } else {
+        setCameraError('Unable to attach camera video stream.');
+      }
+    } catch (err: any) {
+      console.error('Camera initialization error:', err);
+      setIsCameraActive(false);
+      
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setCameraError('Camera permission was denied. Please allow camera access in browser site settings, or use Upload Image.');
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        setCameraError('No camera device found on this system. Please use Upload Image.');
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        setCameraError('Camera is already in use by another application.');
+      } else if (err.name === 'OverconstrainedError') {
+        setCameraError('Requested camera constraints not met by hardware.');
+      } else {
+        setCameraError(`Camera error: ${err.message || 'Access failed'}. Use Upload Image fallback.`);
+      }
+    } finally {
+      setIsCameraLoading(false);
+    }
+  };
+
+  const handleSwitchCamera = () => {
+    const nextMode = cameraFacingMode === 'environment' ? 'user' : 'environment';
+    startCamera(nextMode);
   };
 
   const capturePhoto = () => {
@@ -225,63 +288,121 @@ export const CameraScannerModal: React.FC<CameraScannerModalProps> = ({
 
             {/* Stage View */}
             {activeTab === 'camera' ? (
-              <div className="relative w-full h-full flex items-center justify-center">
+              <div className="relative w-full h-full flex items-center justify-center min-h-[380px]">
                 <video 
                   ref={videoRef} 
-                  autoPlay 
                   playsInline 
-                  className={`max-h-[480px] w-full object-contain rounded-xl border border-slate-800 ${
+                  muted
+                  onError={(e) => {
+                    console.warn('Camera video element notice:', e);
+                  }}
+                  className={`max-h-[440px] w-full object-contain rounded-xl border border-slate-800 ${
                     !isCameraActive ? 'hidden' : ''
                   }`}
                 />
                 <canvas ref={canvasRef} className="hidden" />
 
+                {/* Camera Inactive / Error Display */}
                 {!isCameraActive && (
-                  <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-950/80 rounded-2xl border border-slate-800 max-w-md space-y-3">
-                    <Camera className="w-12 h-12 text-teal-400 mx-auto" />
-                    <h3 className="text-sm font-bold text-slate-200">Camera Access Unavailable / Offline</h3>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      Camera access is unavailable or permission was not granted. You can retry enabling camera or upload scanned script images directly.
-                    </p>
-                    <div className="pt-2 flex items-center justify-center gap-2">
-                      <button
-                        onClick={startCamera}
-                        className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold rounded-lg transition shadow-lg flex items-center gap-1.5"
-                      >
-                        <Camera className="w-3.5 h-3.5" /> Enable Camera
-                      </button>
-                      <button
-                        onClick={() => setActiveTab('upload')}
-                        className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/40 text-xs font-bold rounded-lg transition flex items-center gap-1.5"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> Upload Images Instead
-                      </button>
+                  <div className="flex flex-col items-center justify-center p-6 sm:p-8 text-center bg-slate-950/90 rounded-2xl border border-slate-800 max-w-md space-y-4 my-8">
+                    <div className="p-3 bg-teal-500/10 text-teal-400 rounded-full border border-teal-500/30">
+                      <Camera className="w-10 h-10 mx-auto" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-100">
+                        {isCameraLoading ? 'Initializing Camera Stream...' : 'Camera Access Status'}
+                      </h3>
+                      <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                        {cameraError ? cameraError : 'Camera is currently stopped. Click "OPEN CAMERA" below to activate camera view or use "UPLOAD IMAGE".'}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
+                      {!cameraError ? (
+                        <>
+                          <button
+                            onClick={() => startCamera(cameraFacingMode)}
+                            disabled={isCameraLoading}
+                            className="px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg flex items-center gap-1.5"
+                          >
+                            <Camera className="w-4 h-4" /> OPEN CAMERA
+                          </button>
+
+                          <button
+                            onClick={handleSwitchCamera}
+                            disabled={isCameraLoading}
+                            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5"
+                          >
+                            <RotateCw className="w-4 h-4 text-teal-400" /> SWITCH CAMERA
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setActiveTab('upload');
+                            setTimeout(() => fileInputRef.current?.click(), 100);
+                          }}
+                          className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black text-xs rounded-xl transition flex items-center gap-2 shadow-xl"
+                        >
+                          <Upload className="w-4 h-4" /> UPLOAD IMAGE
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
 
-                {/* Document Edge Detection Simulation Box */}
+                {/* Live Camera Overlays and Controls */}
                 {isCameraActive && (
-                  <div className="absolute inset-12 border-2 border-dashed border-teal-400/80 rounded-xl pointer-events-none flex flex-col justify-between p-4 bg-teal-500/5 animate-pulse">
-                    <div className="flex justify-between text-[10px] text-teal-300 font-mono">
-                      <span>DOC_EDGE_ALIGN: 98%</span>
-                      <span>PERSPECTIVE_AUTO_CORRECT</span>
+                  <>
+                    <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+                      <button
+                        onClick={handleSwitchCamera}
+                        className="px-3 py-1.5 bg-slate-900/90 backdrop-blur hover:bg-slate-800 text-teal-300 border border-slate-700 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow"
+                        title="Switch Front/Rear Camera"
+                      >
+                        <RotateCw className="w-3.5 h-3.5" /> SWITCH CAMERA ({cameraFacingMode === 'environment' ? 'Rear' : 'Front'})
+                      </button>
                     </div>
-                    <div className="text-center text-xs text-teal-200/90 font-medium bg-slate-950/80 py-1 px-3 rounded-full self-center border border-teal-500/30">
-                      Align exam script page inside frame
-                    </div>
-                  </div>
-                )}
 
-                {/* Shutter Button */}
-                {isCameraActive && (
-                  <button
-                    onClick={capturePhoto}
-                    className="absolute bottom-6 z-20 w-16 h-16 rounded-full bg-teal-500 border-4 border-white flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition"
-                    title="Capture Script Page"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-teal-600 border-2 border-teal-300" />
-                  </button>
+                    <div className="absolute inset-12 border-2 border-dashed border-teal-400/80 rounded-xl pointer-events-none flex flex-col justify-between p-4 bg-teal-500/5 animate-pulse">
+                      <div className="flex justify-between text-[10px] text-teal-300 font-mono">
+                        <span>EXAM_SCRIPT_OCR_ALIGN</span>
+                        <span>AUTO_PERSPECTIVE</span>
+                      </div>
+                      <div className="text-center text-xs text-teal-200 font-medium bg-slate-950/80 py-1 px-3 rounded-full self-center border border-teal-500/30">
+                        Position handwritten answer sheet within box
+                      </div>
+                    </div>
+
+                    {/* Camera Action Bar */}
+                    <div className="absolute bottom-4 z-20 flex items-center gap-3 bg-slate-950/90 backdrop-blur px-5 py-2.5 rounded-full border border-slate-800 shadow-2xl">
+                      <button
+                        onClick={capturePhoto}
+                        className="px-5 py-2.5 bg-gradient-to-r from-teal-400 to-emerald-500 hover:from-teal-300 hover:to-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-full shadow-lg flex items-center gap-2 transition transform active:scale-95"
+                      >
+                        <Camera className="w-4 h-4" /> CAPTURE
+                      </button>
+
+                      {pages.length > 0 && (
+                        <button
+                          onClick={() => removePage(pages.length - 1)}
+                          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-full border border-slate-700 flex items-center gap-1.5 transition"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-400" /> RETAKE LAST
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => {
+                          setActiveTab('upload');
+                          setTimeout(() => fileInputRef.current?.click(), 100);
+                        }}
+                        className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 font-bold text-xs rounded-full flex items-center gap-1.5 transition"
+                      >
+                        <Upload className="w-3.5 h-3.5" /> UPLOAD IMAGE
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             ) : (

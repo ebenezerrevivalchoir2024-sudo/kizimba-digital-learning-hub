@@ -1,5 +1,5 @@
 import React from 'react';
-import { GraduationCap, Shield, Heart, Award, Sparkles, BookOpen } from 'lucide-react';
+import { GraduationCap, Award, BookOpen, Sparkles, Heart, ShieldCheck, ArrowRight, School } from 'lucide-react';
 
 interface FooterProps {
   onNavigate: (route: string) => void;
@@ -7,8 +7,8 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="bg-black/90 text-cyan-100 border-t border-cyan-900/40 pt-12 pb-8 font-mono relative z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
+    <footer className="bg-slate-950 text-slate-200 border-t border-blue-900/60 pt-12 pb-8 font-serif relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
         
         {/* Top Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
@@ -16,89 +16,158 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/50 p-0.5 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
-                <div className="w-full h-full bg-black/90 rounded-[10px] flex items-center justify-center">
-                  <GraduationCap className="w-6 h-6 text-cyan-400" />
+              <div className="w-11 h-11 rounded-2xl bg-blue-950 border border-amber-400/60 p-0.5 shadow-lg flex-shrink-0">
+                <div className="w-full h-full bg-slate-900 rounded-xl flex items-center justify-center">
+                  <GraduationCap className="w-6 h-6 text-amber-400" />
                 </div>
               </div>
               <div>
-                <h3 className="font-extrabold text-lg text-white tracking-wider">KIZIMBA DIGITAL LEARNING HUB</h3>
-                <span className="text-xs text-cyan-400 font-bold tracking-widest uppercase">KDLH</span>
+                <h3 className="font-extrabold text-base sm:text-lg text-white tracking-wide">
+                  KIZIMBA DIGITAL LEARNING HUB
+                </h3>
+                <span className="text-xs text-amber-300 font-bold tracking-widest uppercase font-mono">
+                  KDLH • TANZANIA EDTECH
+                </span>
               </div>
             </div>
 
-            <p className="text-xs text-cyan-200/70 leading-relaxed max-w-md">
-              One digital space for learning, revision, practicals, educational resources, and intelligent academic support at Kizimba Secondary School, Tanzania.
+            <p className="text-xs text-slate-300 leading-relaxed max-w-md font-sans">
+              A comprehensive digital academic portal for secondary students and educators at Kizimba Secondary School in Bumbuli, Tanga. Providing curriculum notes, past papers, practical guides, video lessons, and AI exam marking.
             </p>
 
-            <div className="bg-cyan-950/20 border border-cyan-900/50 p-3.5 rounded-xl text-xs space-y-1 backdrop-blur-sm">
-              <span className="text-cyan-400 font-bold block uppercase tracking-wider text-[10px]">Founder Branding</span>
-              <p className="text-cyan-100">
-                Founded by <strong className="text-white font-bold">ISAACK EDWARD LUNGWA</strong>
+            <div className="bg-slate-900/90 border border-blue-800/60 p-4 rounded-2xl text-xs space-y-1 shadow-md">
+              <span className="text-amber-400 font-bold block uppercase tracking-wider text-[10px] font-mono">
+                Platform Founder
+              </span>
+              <p className="text-white font-bold text-sm">
+                Mwl. Isaack Edward Lungwa
               </p>
-              <p className="text-cyan-300/70 text-[11px]">
-                Founder & Creator of Kizimba Digital Learning Hub
+              <p className="text-slate-300 text-[11px] font-sans">
+                Founder & Lead Architect • Kizimba Digital Learning Hub
               </p>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-bold shadow-[0_0_10px_rgba(6,182,212,0.2)]">
-              <Award className="w-3.5 h-3.5 text-cyan-400" /> LEARN • PRACTICE • ASK • IMPROVE
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-950/80 border border-amber-400/40 text-amber-300 text-xs font-bold font-mono">
+              <Award className="w-4 h-4 text-amber-400" />
+              <span>LEARN • PRACTICE • MASTER • EXCEL</span>
             </div>
           </div>
 
-          {/* Core Modules */}
+          {/* Academic Modules */}
           <div className="space-y-3">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-cyan-400">Core Learning</h4>
-            <ul className="space-y-2 text-xs text-cyan-200/70">
-              <li><button onClick={() => onNavigate('/notes')} className="hover:text-cyan-300 transition-colors">Digital Notes Library</button></li>
-              <li><button onClick={() => onNavigate('/past-papers')} className="hover:text-cyan-300 transition-colors">Past Papers Repository</button></li>
-              <li><button onClick={() => onNavigate('/practicals')} className="hover:text-cyan-300 transition-colors">Digital Practical Lab</button></li>
-              <li><button onClick={() => onNavigate('/videos')} className="hover:text-cyan-300 transition-colors">Video Learning Center</button></li>
-              <li><button onClick={() => onNavigate('/tutorials')} className="hover:text-cyan-300 transition-colors">Step-by-Step Tutorials</button></li>
-              <li><button onClick={() => onNavigate('/revision')} className="hover:text-cyan-300 transition-colors">Interactive Revision Center</button></li>
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-300 font-mono">
+              Core Academic
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300 font-sans">
+              <li>
+                <button onClick={() => onNavigate('/notes')} className="hover:text-amber-300 transition-colors text-left">
+                  📚 Notes & Syllabus
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/past-papers')} className="hover:text-amber-300 transition-colors text-left">
+                  📝 NECTA Past Papers
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/practicals')} className="hover:text-amber-300 transition-colors text-left">
+                  🧪 Science Practicals
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/videos')} className="hover:text-amber-300 transition-colors text-left">
+                  🎥 Video Learning Hub
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/books')} className="hover:text-amber-300 transition-colors text-left">
+                  📖 Digital Textbooks
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/questions')} className="hover:text-amber-300 transition-colors text-left">
+                  ❓ Question Bank
+                </button>
+              </li>
             </ul>
           </div>
 
-          {/* Media & Resources */}
+          {/* Teacher & AI Tools */}
           <div className="space-y-3">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-cyan-400">Media & Resources</h4>
-            <ul className="space-y-2 text-xs text-cyan-200/70">
-              <li><button onClick={() => onNavigate('/books')} className="hover:text-cyan-300 transition-colors">Digital Library / Books</button></li>
-              <li><button onClick={() => onNavigate('/questions')} className="hover:text-cyan-300 transition-colors">Question Bank</button></li>
-              <li><button onClick={() => onNavigate('/audio')} className="hover:text-cyan-300 transition-colors">Audio Lessons & Podcasts</button></li>
-              <li><button onClick={() => onNavigate('/music')} className="hover:text-cyan-300 transition-colors">Music & Entertainment Hub</button></li>
-              <li><button onClick={() => onNavigate('/teacher-resources')} className="hover:text-cyan-300 transition-colors">Teacher Resource Center</button></li>
-              <li><button onClick={() => onNavigate('/ai-assistant')} className="hover:text-purple-300 font-bold text-purple-400 flex items-center gap-1"><Sparkles className="w-3 h-3 text-purple-400" /> KDLH AI Assistant</button></li>
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-300 font-mono">
+              Teacher & AI Tools
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300 font-sans">
+              <li>
+                <button onClick={() => onNavigate('/exam-scanner')} className="hover:text-amber-300 transition-colors text-left flex items-center gap-1">
+                  📷 AI Exam Scanner
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/ai-assistant')} className="hover:text-amber-300 transition-colors text-left flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-amber-400" /> KDLH AI Study Tutor
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/teacher-workspace')} className="hover:text-amber-300 transition-colors text-left">
+                  👨🏽‍🏫 Teacher Workspace
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/attendance')} className="hover:text-amber-300 transition-colors text-left">
+                  📅 Student Attendance
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/reports')} className="hover:text-amber-300 transition-colors text-left">
+                  📊 Academic Reports
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/audio')} className="hover:text-amber-300 transition-colors text-left">
+                  🎧 Audio Lessons
+                </button>
+              </li>
             </ul>
           </div>
 
-          {/* Platform & Legal */}
+          {/* Institutional Links */}
           <div className="space-y-3">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-cyan-400">Platform & Rights</h4>
-            <ul className="space-y-2 text-xs text-cyan-200/70">
-              <li><button onClick={() => onNavigate('/about')} className="hover:text-cyan-300 transition-colors">About KDLH & Founder</button></li>
-              <li><button onClick={() => onNavigate('/contact')} className="hover:text-cyan-300 transition-colors">Contact Administration</button></li>
-              <li><button onClick={() => onNavigate('/legal')} className="hover:text-cyan-300 transition-colors">Privacy Policy</button></li>
-              <li><button onClick={() => onNavigate('/legal')} className="hover:text-cyan-300 transition-colors">Terms of Use</button></li>
-              <li><button onClick={() => onNavigate('/legal')} className="hover:text-cyan-300 transition-colors">Copyright & Resource Policy</button></li>
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-300 font-mono">
+              Institutional
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300 font-sans">
+              <li>
+                <button onClick={() => onNavigate('/about')} className="hover:text-amber-300 transition-colors text-left">
+                  About KDLH & Founder
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/contact')} className="hover:text-amber-300 transition-colors text-left">
+                  Contact School Office
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/legal')} className="hover:text-amber-300 transition-colors text-left">
+                  Educational Fair Use Policy
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('/legal')} className="hover:text-amber-300 transition-colors text-left">
+                  Terms & Privacy Notice
+                </button>
+              </li>
             </ul>
           </div>
 
         </div>
 
-        {/* Legal Resource Notice */}
-        <div className="bg-cyan-950/30 p-4 rounded-xl border border-cyan-900/50 text-[11px] text-cyan-200/70 leading-relaxed space-y-1">
-          <span className="font-bold text-cyan-300 block">Copyright & Educational Resource Policy:</span>
-          <p>
-            Kizimba Digital Learning Hub respects intellectual property rights. All notes, practical guides, assessment tools, and tutorial media are school-owned, teacher-created, openly licensed, or attributed to public-domain/official sources. Copyrighted third-party content is accessed via authorized official links or embeds.
-          </p>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="pt-6 border-t border-cyan-900/40 flex flex-col sm:flex-row items-center justify-between text-xs text-cyan-400/60 gap-4">
-          <p>© {new Date().getFullYear()} KIZIMBA DIGITAL LEARNING HUB (KDLH). Founded by <strong className="text-white">ISAACK EDWARD LUNGWA</strong>.</p>
-          <p className="flex items-center gap-1 text-cyan-300/80">
-            Built for Kizimba Secondary School, Tanzania • EdTech Platform
+        {/* Bottom Clean Copyright Strip */}
+        <div className="pt-6 border-t border-blue-900/40 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3 font-sans">
+          <p>© {new Date().getFullYear()} KIZIMBA DIGITAL LEARNING HUB (KDLH). Built for Kizimba Secondary School, Bumbuli, Tanga, Tanzania.</p>
+          <p className="flex items-center gap-1.5 text-amber-300 font-serif">
+            <span>Founded by</span>
+            <strong className="text-white">Isaack Edward Lungwa</strong>
           </p>
         </div>
 

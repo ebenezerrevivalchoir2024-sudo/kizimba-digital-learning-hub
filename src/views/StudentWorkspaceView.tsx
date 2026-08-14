@@ -78,16 +78,16 @@ EXECUTIVE SUMMARY:
 ${summary.shortSummary}
 
 KEY REVISION POINTS:
-${summary.keyPoints.map((pt, i) => `${i + 1}. ${pt}`).join('\n')}
+${(summary.keyPoints || []).map((pt, i) => `${i + 1}. ${pt}`).join('\n')}
 
 IMPORTANT DEFINITIONS:
-${summary.importantDefinitions.map(d => `- ${d.term}: ${d.definition}`).join('\n')}
+${(summary.importantDefinitions || []).map(d => `- ${d.term}: ${d.definition}`).join('\n')}
 
 ESSENTIAL FORMULAS:
-${summary.formulas.map(f => `- ${f.name}: ${f.formula}`).join('\n')}
+${(summary.formulas || []).map(f => `- ${f.name}: ${f.formula}`).join('\n')}
 
 EXAM REVISION QUESTIONS:
-${summary.examQuestions.map((q, i) => `Q${i + 1} (${q.marks} Marks): ${q.question}`).join('\n')}
+${(summary.examQuestions || []).map((q, i) => `Q${i + 1} (${q.marks} Marks): ${q.question}`).join('\n')}
 
 =====================================================
 Downloaded from KDLH Offline Student Vault

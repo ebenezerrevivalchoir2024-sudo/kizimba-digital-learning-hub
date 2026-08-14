@@ -234,7 +234,7 @@ export const WeeklyReportingModal: React.FC<WeeklyReportingModalProps> = ({
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800 text-slate-300 font-mono">
-                        {selectedReport.marksObtained.map((m, idx) => {
+                        {(selectedReport.marksObtained || []).map((m, idx) => {
                           const pct = Math.round((m.score / m.total) * 100);
                           return (
                             <tr key={idx} className="hover:bg-slate-900/50">
@@ -260,7 +260,7 @@ export const WeeklyReportingModal: React.FC<WeeklyReportingModalProps> = ({
                   <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
                     <h5 className="font-bold text-blue-400 uppercase text-[10px]">Topics Taught This Week</h5>
                     <ul className="list-disc list-inside space-y-1 text-slate-300">
-                      {selectedReport.topicsCovered.map((t, idx) => (
+                      {(selectedReport.topicsCovered || []).map((t, idx) => (
                         <li key={idx}>{t}</li>
                       ))}
                     </ul>

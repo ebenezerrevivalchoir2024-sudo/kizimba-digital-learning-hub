@@ -24,10 +24,12 @@ How can I assist your study or lesson preparation today?`,
   ]);
 
   const promptPresets = [
+    "Ushauri kwa Waliopitia Usaliti (Betrayal & Heartbreak Guidance)",
     "Teach me naming of alcohols from beginner level.",
-    "Generate 5 Form IV Chemistry questions about alcohols with answers and marking points.",
-    "Explain Ohm's Law and calculate current for 12V across 4 Ohms.",
-    "Explain Mendel's Laws of Inheritance for Form IV Biology."
+    "How can I manage peer pressure and maintain academic focus for Form IV NECTA exams?",
+    "Tell me about Founder Isaack Edward Lungwa and Kizimba Secondary School.",
+    "Generate 5 Form IV Chemistry questions with marking scheme.",
+    "Explain Ohm's Law and calculate current for 12V across 4 Ohms."
   ];
 
   const handleSend = async (customText?: string) => {

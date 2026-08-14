@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "users": {
+      "title": "Users",
+      "description": "User profile records containing role, teacher verification status, phone, and academic credentials",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "description": "User email address" },
+        "name": { "type": "string", "description": "Full legal or display name" },
+        "displayName": { "type": "string", "description": "Display name" },
+        "phone": { "type": "string", "description": "Verified Tanzanian phone number (+255)" },
+        "role": { "type": "string", "enum": ["STUDENT", "TEACHER", "ADMIN", "FOUNDER", "student", "teacher", "admin", "founder"], "description": "System role" },
+        "teacherApprovalStatus": { "type": "string", "enum": ["APPROVED", "PENDING", "REJECTED"], "description": "Teacher administrative approval state" },
+        "teacherApprovalDate": { "type": "string", "description": "Timestamp of teacher verification" },
+        "teacherApprovedBy": { "type": "string", "description": "UID of admin/founder who approved" },
+        "school": { "type": "string", "description": "School name" },
+        "form": { "type": "string", "description": "Form or class level (Form I - VI)" },
+        "studentId": { "type": "string", "description": "Student Admission/Registration ID" },
+        "subjects": { "type": "array", "items": { "type": "string" }, "description": "Taught subjects" },
+        "formsTaught": { "type": "array", "items": { "type": "string" }, "description": "Forms taught by teacher" },
+        "avatarUrl": { "type": "string", "description": "Profile picture URL" },
+        "authProvider": { "type": "string", "description": "Authentication method (phone, email, google, admin)" },
+        "isRegistered": { "type": "boolean", "description": "Whether user completed full registration" },
+        "joinedDate": { "type": "string", "description": "Joined date string" },
+        "registrationDate": { "type": "string", "description": "ISO registration date" },
+        "streakDays": { "type": "number", "description": "Active learning streak" },
+        "createdAt": { "type": "string", "description": "Creation timestamp ISO string" },
+        "lastActiveAt": { "type": "string", "description": "Last active timestamp" },
+        "status": { "type": "string", "enum": ["active", "suspended"], "description": "Account status" }
+      },
+      "required": ["role"]
+    },
+    "resources": {
+      "title": "Resources",
+      "description": "Academic educational resources including notes, past papers, practical guides, textbooks, questions, audio, and videos",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the educational resource" },
+        "category": { "type": "string", "enum": ["NOTE", "PAST_PAPER", "PRACTICAL", "VIDEO", "AUDIO", "BOOK", "QUESTION", "TUTORIAL", "TEACHER_RESOURCE", "MUSIC"], "description": "Resource category" },
+        "subjectId": { "type": "string", "description": "Subject identifier" },
+        "subjectName": { "type": "string", "description": "Subject name" },
+        "form": { "type": "string", "description": "Class level (Form I - VI)" },
+        "topic": { "type": "string", "description": "Curriculum topic" },
+        "subtopic": { "type": "string", "description": "Subtopic or chapter" },
+        "description": { "type": "string", "description": "Summary or syllabus description" },
+        "contentMarkdown": { "type": "string", "description": "Markdown formatted notes or content" },
+        "author": { "type": "string", "description": "Author or educator name" },
+        "authorRole": { "type": "string", "description": "Role of the author" },
+        "uploaderId": { "type": "string", "description": "Firebase Auth UID of the uploader" },
+        "approvalStatus": { "type": "string", "enum": ["APPROVED", "PENDING", "REJECTED"], "description": "Approval workflow state" },
+        "dateAdded": { "type": "string", "description": "Date created ISO string" },
+        "createdAt": { "type": "string", "description": "Server timestamp" }
+      },
+      "required": ["title", "category", "subjectName", "form", "topic", "uploaderId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/users" },
+      "description": "User profile collection"
+    },
+    "/resources/{resourceId}": {
+      "schema": { "$ref": "#/entities/resources" },
+      "description": "Academic resources collection"
+    }
+  }
+}
+

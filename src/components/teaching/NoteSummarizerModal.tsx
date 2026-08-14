@@ -203,7 +203,7 @@ export const NoteSummarizerModal: React.FC<NoteSummarizerModalProps> = ({
                   <Layers className="w-4 h-4" /> Key Revision Points
                 </h3>
                 <ul className="space-y-1.5 list-disc list-inside text-slate-300">
-                  {activeSummary.keyPoints.map((pt, idx) => (
+                  {(activeSummary.keyPoints || []).map((pt, idx) => (
                     <li key={idx} className="leading-relaxed">{pt}</li>
                   ))}
                 </ul>
@@ -216,7 +216,7 @@ export const NoteSummarizerModal: React.FC<NoteSummarizerModalProps> = ({
                 <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
                   <h3 className="font-bold text-teal-400 uppercase tracking-wider text-xs">Important Definitions</h3>
                   <div className="space-y-2">
-                    {activeSummary.importantDefinitions.map((def, i) => (
+                    {(activeSummary.importantDefinitions || []).map((def, i) => (
                       <div key={i} className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
                         <span className="font-bold text-emerald-300 block">{def.term}</span>
                         <span className="text-slate-400 text-[11px]">{def.definition}</span>
@@ -229,7 +229,7 @@ export const NoteSummarizerModal: React.FC<NoteSummarizerModalProps> = ({
                 <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
                   <h3 className="font-bold text-teal-400 uppercase tracking-wider text-xs">Essential Chemical Formulas</h3>
                   <div className="space-y-2">
-                    {activeSummary.formulas.map((form, i) => (
+                    {(activeSummary.formulas || []).map((form, i) => (
                       <div key={i} className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
                         <span className="font-semibold text-slate-300 block">{form.name}</span>
                         <span className="font-mono text-teal-300 font-bold">{form.formula}</span>
@@ -247,7 +247,7 @@ export const NoteSummarizerModal: React.FC<NoteSummarizerModalProps> = ({
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {activeSummary.flashcards.map((fc, i) => (
+                  {(activeSummary.flashcards || []).map((fc, i) => (
                     <div key={i} className="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
                       <span className="text-teal-300 font-bold block">Q: {fc.question}</span>
                       <span className="text-emerald-300 font-semibold block text-[11px]">A: {fc.answer}</span>
